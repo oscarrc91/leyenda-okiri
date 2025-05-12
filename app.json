@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "leyenda-okiri",
+    "slug": "leyenda-okiri",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/app_icon.png",
+    "scheme": "leyendaokiri",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "icon": "./src/assets/images/app_icon.png",
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/app_icon_tr.png",
+        "backgroundColor": "#171c21"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ],
+      "expo-sqlite"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

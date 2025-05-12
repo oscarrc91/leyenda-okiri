@@ -1,0 +1,18 @@
+# React Native / Expo
+node_modules/
+dist/
+build/
+.expo/
+.expo-shared/
+web-build/
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Env variables
+.env
