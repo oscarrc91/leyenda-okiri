@@ -5,7 +5,7 @@ import * as Facebook from 'expo-auth-session/providers/facebook';
 import * as Google from 'expo-auth-session/providers/google';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Gyroscope } from 'expo-sensors';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -20,6 +20,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { RootStackParamList } from '../AppNavigator';
 import DustOverlay from '../components/DustOverlay';
 import { useBanner } from '../contexts/BannerContext';
@@ -50,6 +51,7 @@ export default function LoginScreen({route}: Props) {
   const [email, setEmail]   = useState('');
   const [pass, setPass]     = useState('');
   const navigation = useNavigation<LoginScreenNavigationProp>();
+  const insets = useSafeAreaInsets();
   const showBanner = useBanner();
 
   const redirectUri = 'https://auth.expo.dev/@oscar_rc91/leyenda-okiri';
@@ -68,13 +70,13 @@ export default function LoginScreen({route}: Props) {
     clientId: '<TU_FB_APP_ID>',
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (request) {
       // console.log('🔗 Google Auth URL:', request.url);
     }
   }, [request]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (response?.type === 'success') {
       // manejar respuesta de Google...
     }
@@ -83,7 +85,7 @@ export default function LoginScreen({route}: Props) {
     }
   }, [response, fbResponse]);
 
-  React.useEffect(() => {
+  useEffect(() => {
   if (route.params?.openEmailModal) {
     setShowModal(true);
 
@@ -92,14 +94,15 @@ export default function LoginScreen({route}: Props) {
       icon: require('../assets/images/pass_icon.png'),
       children: (
         <>
-          Need help? <Text style={{ fontWeight: 'bold' }}>Contact our support</Text>
+          {/* Need help? <Text style={{ fontWeight:'bold' }}>Contact our support</Text> */}
+          <Text style={{ fontWeight:'bold' }}>Contraseña</Text> cambiada correctamente
         </>
       ),
-      compact: true,   // <— aquí
-      onPress: () => navigation.navigate('Login', { openEmailModal: true }),
+      onPress: () => { /* navegar a soporte */ },
+      duration: 5000, // opcional
     });
 
-    // Limpiamos el parámetro para no disparar de nuevo si solo cambian otros params
+    // reseteamos el param para no dispararlo otra vez
     navigation.setParams({ openEmailModal: false });
   }
 }, [route.params]);
@@ -128,8 +131,8 @@ export default function LoginScreen({route}: Props) {
 
   const FLARE_DEPTH = 2.0; 
   // Animated values para el desplazamiento X/Y
-  const translateX = React.useRef(new Animated.Value(0)).current;
-  const translateY = React.useRef(new Animated.Value(0)).current;
+  const translateX = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(0)).current;
   // Multiplica tus valores de fondo por ese factor para el flare
   const flareX = Animated.multiply(translateX, FLARE_DEPTH);
   const flareY = Animated.multiply(translateY, FLARE_DEPTH);
@@ -144,7 +147,7 @@ export default function LoginScreen({route}: Props) {
     extrapolate: 'clamp',
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     Gyroscope.setUpdateInterval(100) // 10 lecturas por segundo
     const sub = Gyroscope.addListener(({ x, y }) => {
       // x = rotación alrededor del eje X (inclinación adelante/atrás)
@@ -171,6 +174,11 @@ export default function LoginScreen({route}: Props) {
     return () => sub.remove()
   }, [])
 
+
+
+
+
+
   return (
     <View style={styles.container}>
       {/* Fondo animado */}
@@ -189,30 +197,30 @@ export default function LoginScreen({route}: Props) {
       />
 
       {/* Capa de lens flare animado */}
-    <AnimatedLensFlare
-      source={flareImage}
-      style={[
-        styles.flare,
-        {
-          // Hacemos que el flare se mueva la mitad que el fondo, para dar profundidad
-          transform: [
-            { translateX: flareTranslateX },
-            { translateY: flareTranslateY },
-          ],
-          opacity: translateX.interpolate({
-            inputRange: [-40, 0, 40],
-            outputRange: [0.2, 0.6, 0.2],
-            extrapolate: 'clamp',
-          }),
-        }
-      ]}
-      resizeMode="contain"
-    />
+      <AnimatedLensFlare
+        source={flareImage}
+        style={[
+          styles.flare,
+          {
+            // Hacemos que el flare se mueva la mitad que el fondo, para dar profundidad
+            transform: [
+              { translateX: flareTranslateX },
+              { translateY: flareTranslateY },
+            ],
+            opacity: translateX.interpolate({
+              inputRange: [-40, 0, 40],
+              outputRange: [0.2, 0.6, 0.2],
+              extrapolate: 'clamp',
+            }),
+          }
+        ]}
+        resizeMode="contain"
+      />
 
     
 
       {/* Capa de contenido */}
-      <View style={styles.overlay}>
+      <SafeAreaView style={styles.overlay} edges={['top', 'left', 'right']}>
         <LinearGradient
           colors={['rgba(17, 20, 25, 0)', 'rgba(17, 20, 25, 0.77)']} // del 0% arriba al 100% abajo
           locations={[0.2, 1]}
@@ -340,46 +348,42 @@ export default function LoginScreen({route}: Props) {
             </View>
           </View>
         </Modal>
-      </View>
+      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    overflow: 'hidden',// para que al desplazar no se vea fuera de pantalla
-  },
   background: {
     position: 'absolute',
-    width: width + 40,    // ampliamos para cubrir el deslizamiento
+    width: width + 40,
     height: height + 40,
-    marginLeft: -20,      // centramos
+    marginLeft: -20,
     marginTop:  -20,
   },
   flare: {
     position: 'absolute',
-    top: -140,     // sitúalo donde el sol entra (ajusta a tu imagen)
+    top: -140,
     left: -80,
-    width: width * 2,    // suficientemente grande para cubrir
+    width: width * 2,
     height: width * 2,
-    opacity: 1,          // base de opacidad
+    opacity: 1,
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,  // ocupa toda la pantalla
+    flex: 1,
   },
   linearGradient: {
     width: width,
   },
   container: {
     flex: 1,
-    overflow: 'hidden',
+    overflow: 'visible',
   },
   content: {
     flexGrow: 1,
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: '52%',  // vuelve a poner el logo en su sitio
+    paddingTop: '42%',
     paddingBottom: 40,
   },
   logo: {

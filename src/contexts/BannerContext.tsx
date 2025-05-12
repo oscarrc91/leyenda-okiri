@@ -1,25 +1,40 @@
-// src/contexts/BannerContext.tsx
 import React, { createContext, useContext, useState } from 'react';
-import { Banner, BannerProps } from '../components/Banner';
+import TopBanner, { TopBannerProps } from '../components/TopBanner';
 
-type ShowBannerFn = (b: Omit<BannerProps, 'id'>) => void;
+type ShowBannerFn = (opts: Omit<TopBannerProps, 'children'> & {
+  children: React.ReactNode;
+  duration?: number;
+}) => void;
+
 const BannerContext = createContext<ShowBannerFn | undefined>(undefined);
 
 export function BannerProvider({ children }: { children: React.ReactNode }) {
-  const [banners, setBanners] = useState<BannerProps[]>([]);
+  const [banners, setBanners] = useState<
+    Array<Omit<TopBannerProps, 'children'> & {
+      children: React.ReactNode;
+      id: string;
+    }>
+  >([]);
 
-  const show: ShowBannerFn = ({ icon, children, onPress, compact }) => {
+  const showBanner: ShowBannerFn = ({ icon, children, onPress, duration = 5000 }) => {
     const id = Date.now().toString();
-    setBanners(bs => [...bs, { id, icon, children, onPress, compact }]);
-    setTimeout(() => setBanners(bs => bs.filter(x => x.id !== id)), 5000);
+    setBanners(bs => [...bs, { id, icon, children, onPress }]);
+    setTimeout(() => {
+      setBanners(bs => bs.filter(b => b.id !== id));
+    }, duration);
   };
 
   return (
-    <BannerContext.Provider value={show}>
-      {/* No más Views extra aquí, el View de App.tsx es el contenedor */}
+    <BannerContext.Provider value={showBanner}>
       {children}
       {banners.map(b => (
-        <Banner key={b.id} {...b} />
+        <TopBanner
+          key={b.id}
+          icon={b.icon}
+          onPress={b.onPress}
+        >
+          {b.children}
+        </TopBanner>
       ))}
     </BannerContext.Provider>
   );
