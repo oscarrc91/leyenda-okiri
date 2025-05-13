@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons'; // Expo incluye este paquete por defecto
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -19,6 +19,7 @@ import {
 } from '../services/auth';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ResetPassword'>;
+const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export default function ResetPasswordScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
@@ -27,23 +28,30 @@ export default function ResetPasswordScreen({ navigation }: Props) {
   const [confirmPass, setConfirmPass] = useState('');
   const [stage, setStage] = useState<'send' | 'verify'>('send');
   const [error, setError] = useState<string | null>(null);
+  const [error2, setError2] = useState<string | null>(null);
+  const codeInputRef = useRef<TextInput>(null);
 
   // 1) Siempre activo: pedimos el envío de código silent
   const handleSendCode = () => {
+    if (!isValidEmail(email.trim())) {
+      setError('No es un email válido');  // muestra el error
+      return;
+    }
     sendVerificationCode(email); // limitado internamente a 1 envío/5min
     setError(null);
+    codeInputRef.current?.focus();
   };
 
   // 2) Verificamos y avanzamos
   const handleVerify = async () => {
-    setError(null);
-    if (!code) return setError('Introduce el código recibido');
+    setError2(null);
+    if (!code) return setError2('Introduce el código recibido');
     const ok = await verifyCode(email, code);
     if (ok) {
       setStage('verify');
-      setError(null);
+      setError2(null);
     } else {
-      setError('Código inválido o caducado');
+      setError2('Código inválido o caducado');
     }
   };
 
@@ -57,7 +65,10 @@ export default function ResetPasswordScreen({ navigation }: Props) {
     if (result.success) {
       // setError('Contraseña cambiada ✅');
       setTimeout(() => {
-        navigation.navigate('Login', { openEmailModal: true });
+        navigation.navigate('Login', {
+          openEmailModal: true,
+          email: email,    // tu estado de email en ResetPasswordScreen
+        });
       }, 1200);
     } else {
       setError(result.error ?? 'Error cambiando contraseña');
@@ -90,9 +101,11 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             placeholder="Correo electrónico"
             autoCapitalize="none"
             keyboardType="email-address"
+            autoCorrect={false}
             value={email}
             onChangeText={setEmail}
           />
+          {error && <Text style={styles.error}>{error}</Text>}
           <TouchableOpacity
             style={styles.buttonFull}
             onPress={handleSendCode}
@@ -104,6 +117,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             2. Introduce aquí el código de 6 dígitos que recibiste. El código caduca a los 5 min.
           </Text>
           <TextInput
+            ref={codeInputRef}
             style={styles.inputFull}
             placeholder="Código de verificación"
             keyboardType="number-pad"
@@ -111,6 +125,7 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             onChangeText={setCode}
             editable={stage === 'send'}
           />
+          {error2 && <Text style={styles.error}>{error2}</Text>}
           <TouchableOpacity
             style={styles.buttonFull}
             onPress={handleVerify}
@@ -130,6 +145,8 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             style={styles.input}
             placeholder="Nueva contraseña"
             secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
             value={newPass}
             onChangeText={setNewPass}
           />
@@ -137,16 +154,17 @@ export default function ResetPasswordScreen({ navigation }: Props) {
             style={styles.input}
             placeholder="Confirmar contraseña"
             secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
             value={confirmPass}
             onChangeText={setConfirmPass}
           />
+          {error && <Text style={styles.error}>{error}</Text>}
           <TouchableOpacity style={styles.button} onPress={handleChange}>
             <Text style={styles.buttonText}>Cambiar contraseña</Text>
           </TouchableOpacity>
         </>
       )}
-
-      {error && <Text style={styles.error}>{error}</Text>}
     </KeyboardAvoidingView>
   );
 }
@@ -199,7 +217,7 @@ const styles = StyleSheet.create({
   error: {
     color: '#E53E3E',
     textAlign: 'center',
-    marginTop: 12,
+    marginBottom: 10,
   },
   inputFull: {
     width: '100%',

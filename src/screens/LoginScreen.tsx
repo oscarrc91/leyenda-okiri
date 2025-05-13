@@ -53,6 +53,9 @@ export default function LoginScreen({route}: Props) {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const insets = useSafeAreaInsets();
   const showBanner = useBanner();
+  const emailInputRef = useRef<TextInput>(null);
+  const [shouldFocusEmail, setShouldFocusEmail] = useState(false);
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const redirectUri = 'https://auth.expo.dev/@oscar_rc91/leyenda-okiri';
   // console.log('🔗 Redirect URI (proxy):', redirectUri);
@@ -87,7 +90,12 @@ export default function LoginScreen({route}: Props) {
 
   useEffect(() => {
   if (route.params?.openEmailModal) {
+    if (route.params.email) {
+      setEmail(route.params.email);
+    }
+
     setShowModal(true);
+    setShouldFocusEmail(true);  
 
     // Muestro un banner de éxito
     showBanner({
@@ -102,8 +110,7 @@ export default function LoginScreen({route}: Props) {
       duration: 5000, // opcional
     });
 
-    // reseteamos el param para no dispararlo otra vez
-    navigation.setParams({ openEmailModal: false });
+    navigation.setParams({ openEmailModal: false, email: undefined });
   }
 }, [route.params]);
 
@@ -114,10 +121,14 @@ export default function LoginScreen({route}: Props) {
     if (!email.trim() || !pass) {
       return setMessage('Rellena ambos campos');
     }
+    if (!isValidEmail(email.trim())) {
+      return setMessage('No es un email válido');
+    }
     const result = await registerUser(email.trim(), pass);
     if (result.success) {
       setMessage('Registro correcto ✅');
       setTimeout(() => setShowModal(false), 800);
+      navigation.navigate('CharacterSheet');
     } else {
       setMessage(result.error!);
     }
@@ -126,7 +137,10 @@ export default function LoginScreen({route}: Props) {
     if (!email || !pass) return setMessage('Rellena ambos campos');
     const ok = await loginUser(email, pass);
     setMessage(ok ? '¡Bienvenido! 🎉' : 'Credenciales inválidas ❌');
-    if (ok) setShowModal(false);
+    if (ok) {
+      setShowModal(false);
+      navigation.navigate('CharacterSheet');
+    }
   };
 
   const FLARE_DEPTH = 2.0; 
@@ -236,6 +250,9 @@ export default function LoginScreen({route}: Props) {
         <ScrollView
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+          bounces={false}
+          overScrollMode="never"
           >
           <Image source={logoImage} style={styles.logo} />
 
@@ -257,6 +274,8 @@ export default function LoginScreen({route}: Props) {
           <TouchableOpacity
             style={[styles.button, styles.appleButton]}
             onPress={async () => {
+              navigation.navigate('CharacterSheet');
+              
               if (await AppleAuthentication.isAvailableAsync()) {
                 const cred = await AppleAuthentication.signInAsync({
                   requestedScopes: [
@@ -306,12 +325,19 @@ export default function LoginScreen({route}: Props) {
           transparent
           animationType="slide"
           onRequestClose={() => setShowModal(false)}
+          onShow={() => {
+          if (shouldFocusEmail) {
+            emailInputRef.current?.focus();
+            setShouldFocusEmail(false);
+          }
+        }}
         >
           <View style={styles.modalBackdrop}>
             <View style={styles.modalContainer}>
               <Text style={styles.modalTitle}>Continuar con email</Text>
               <TextInput
-                style={styles.modalInput}
+                ref={emailInputRef}
+                style={styles.modalInput}   
                 placeholder="Correo electrónico"
                 keyboardType="email-address"
                 autoCapitalize="none"
