@@ -128,7 +128,7 @@ export default function LoginScreen({route}: Props) {
     if (result.success) {
       setMessage('Registro correcto ✅');
       setTimeout(() => setShowModal(false), 800);
-      navigation.navigate('CharacterSheet');
+      navigation.navigate('Main', { email });
     } else {
       setMessage(result.error!);
     }
@@ -139,7 +139,7 @@ export default function LoginScreen({route}: Props) {
     setMessage(ok ? '¡Bienvenido! 🎉' : 'Credenciales inválidas ❌');
     if (ok) {
       setShowModal(false);
-      navigation.navigate('CharacterSheet');
+      navigation.navigate('Main', { email });
     }
   };
 
@@ -274,7 +274,7 @@ export default function LoginScreen({route}: Props) {
           <TouchableOpacity
             style={[styles.button, styles.appleButton]}
             onPress={async () => {
-              navigation.navigate('CharacterSheet');
+              navigation.navigate('Main', {});
               
               if (await AppleAuthentication.isAvailableAsync()) {
                 const cred = await AppleAuthentication.signInAsync({
@@ -347,6 +347,8 @@ export default function LoginScreen({route}: Props) {
               <TextInput
                 style={styles.modalInput}
                 placeholder="Contraseña"
+                autoCapitalize="none"
+                autoCorrect={false}
                 secureTextEntry
                 value={pass}
                 onChangeText={setPass}

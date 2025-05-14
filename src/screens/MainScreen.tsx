@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { DrawerActions, useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
-import { Image, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
@@ -21,19 +22,39 @@ function CharacterScreen() { return <View style={styles.placeholder} />; }
 function CombatScreen()   { return <View style={styles.placeholder} />; }
 function NotesScreen()     { return <View style={styles.placeholder} />; }
 
-export default function CharacterSheetScreen() {
-  return (
-    <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        {/* Top bar */}
-        <View style={styles.topBar}>
-            <View style={{ flex: 1 }} />
-            <TouchableOpacity onPress={() => {/* open drawer/options */}}>
-            <Icon name="menu" size={28} color="#FFF" />
-            </TouchableOpacity>
-        </View>
+export default function MainScreen() {
+  const insets = useSafeAreaInsets();
+  const route = useRoute();
+  const navigation = useNavigation();
 
-        {/* Tabs */}
+  // Si has pasado el email como parámetro de navegación:
+  const email = (route.params as any)?.email as string | undefined;
+  const initial = email ? email.charAt(0).toUpperCase() : null;
+
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <StatusBar barStyle="light-content" />
+      {/* Header simplificado respetando safe area */}
+      <View style={[styles.header, { alignSelf: 'flex-start' }]}>
+        {initial
+          // Si tenemos initial, mostramos solo el avatar a la izquierda
+          ? (
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>{initial}</Text>
+            </View>
+          )
+          // Si no, mostramos solo el icono de menú
+          : (
+            <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+              <Icon name="menu" size={28} style={styles.menuIcon} />
+            </TouchableOpacity>
+          )
+        }
+      </View>
+
+      {/* Tabs */}
+      <View style={{ flex: 1 }}>
         <Tab.Navigator
             initialRouteName="Personaje"
             screenOptions={({ route }) => ({
@@ -62,6 +83,7 @@ export default function CharacterSheetScreen() {
             <Tab.Screen name="Combate"    component={CombatScreen} />
             <Tab.Screen name="Notas"      component={NotesScreen} />
         </Tab.Navigator>
+    </View>
     </SafeAreaView>
   );
 }
@@ -71,11 +93,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#121619',
   },
-  topBar: {
-    height: 56,
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    backgroundColor: 'transparent',
+    alignSelf: 'flex-start',
+  },
+  menuIcon: {
+    color: "#FFF",
+    marginLeft: 16,
+    marginTop: 16,
+  },
+  avatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 20,
+    backgroundColor: '#c20e0d',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 16,
+    marginTop: 16,
+  },
+  avatarText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 19,
+    lineHeight: 18,
   },
   placeholder: {
     flex: 1,
