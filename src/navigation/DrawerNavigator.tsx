@@ -1,18 +1,17 @@
 import {
-    createDrawerNavigator,
-    DrawerContentComponentProps,
-    DrawerContentScrollView
+  createDrawerNavigator,
+  DrawerContentComponentProps,
+  DrawerContentScrollView
 } from '@react-navigation/drawer';
 import React from 'react';
 import {
-    Dimensions,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { default as MainScreen } from '../screens/MainScreen';
 // … importa el resto de pantallas del drawer
@@ -33,7 +32,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       {/* ——— HEADER —— */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => props.navigation.closeDrawer()}>
-          <Icon name="arrow-back-ios" size={24} color="#FFF" />
+          {/* <Icon name="arrow-back-ios" size={24} color="#FFF" /> */}
         </TouchableOpacity>
         <Text style={styles.headerText}> NIVEL {level} | {exp} EXP </Text>
         {/* Barra de progreso */}

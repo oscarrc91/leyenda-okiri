@@ -3,7 +3,6 @@ import { DrawerActions, useNavigation, useRoute } from '@react-navigation/native
 import React from 'react';
 import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,7 +46,7 @@ export default function MainScreen() {
           // Si no, mostramos solo el icono de menú
           : (
             <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              <Icon name="menu" size={28} style={styles.menuIcon} />
+              {/* <Icon name="menu" size={28} style={styles.menuIcon} /> */}
             </TouchableOpacity>
           )
         }

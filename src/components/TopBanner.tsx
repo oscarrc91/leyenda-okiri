@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-    Image,
-    ImageSourcePropType,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export type TopBannerProps = {
@@ -18,7 +18,7 @@ export default function TopBanner({ icon, children, onPress }: TopBannerProps) {
   const Container: any = onPress ? TouchableOpacity : View;
   return (
     <Container style={styles.banner} onPress={onPress} activeOpacity={0.8}>
-      {icon && <Image source={icon} style={styles.icon} />}
+      {icon ? <Image source={icon} style={styles.icon} /> : null}
       <Text style={styles.text}>{children}</Text>
     </Container>
   );

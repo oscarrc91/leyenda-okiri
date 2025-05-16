@@ -1,34 +1,16 @@
-La próxima vez que hagas cambios y quieras guardarlos en tu repo de GitHub vía SSH, tu flujo habitual será algo así:
 
-1.Comprueba el estado de tu repo
-
-git status
-
-Te mostrará los ficheros modificados, nuevos o eliminados.
-
-
-2. Integra los cambios
 
 Para añadir todos los ficheros nuevos/modificados:
 
 git add .
-
-O bien añade selectivamente:
-
-git add src/screens/LoginScreen.tsx
 
 
 3. Haz un commit con mensaje claro
 
 git commit -m "📦 Mejora: ajusta estilo de botón en pantalla de login"
 
-Procura que el mensaje describa brevemente qué y por qué cambias.
 
-
-4. Sincroniza tu rama local con la remota
-
-Primero trae cambios del remoto (en caso de que alguien más haya empujado):
-
+4. Primero trae cambios del remoto (en caso de que alguien más haya empujado):
 git pull --rebase
 
 Luego sube tu commit a GitHub:

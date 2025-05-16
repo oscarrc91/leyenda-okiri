@@ -103,7 +103,9 @@ export default function LoginScreen({route}: Props) {
       children: (
         <>
           {/* Need help? <Text style={{ fontWeight:'bold' }}>Contact our support</Text> */}
-          <Text style={{ fontWeight:'bold' }}>Contraseña</Text> cambiada correctamente
+          <Text style={{ fontWeight: '600' }}>
+            <Text style={{ fontWeight: 'bold' }}>Contraseña</Text> cambiada correctamente
+          </Text>
         </>
       ),
       onPress: () => { /* navegar a soporte */ },
@@ -274,7 +276,7 @@ export default function LoginScreen({route}: Props) {
           <TouchableOpacity
             style={[styles.button, styles.appleButton]}
             onPress={async () => {
-              navigation.navigate('Main', {});
+              navigation.navigate('NewCharacter');
               
               if (await AppleAuthentication.isAvailableAsync()) {
                 const cred = await AppleAuthentication.signInAsync({
