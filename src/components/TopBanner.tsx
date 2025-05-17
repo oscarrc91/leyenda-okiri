@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   banner: {
     position: 'absolute',
     top: 40,
-    right: 0,                   // ¡número!
+    right: 0,
     maxWidth: '75%',
     backgroundColor: 'rgba(0,0,0,0.6)',
     flexDirection: 'row',

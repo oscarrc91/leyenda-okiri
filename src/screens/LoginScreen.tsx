@@ -197,7 +197,7 @@ export default function LoginScreen({route}: Props) {
 
   return (
     <View style={styles.container}>
-      {/* Fondo animado */}
+      
       <AnimatedImageBackground
         source={backgroundImage}
         style={[
@@ -212,13 +212,12 @@ export default function LoginScreen({route}: Props) {
         resizeMode="cover"
       />
 
-      {/* Capa de lens flare animado */}
+      
       <AnimatedLensFlare
         source={flareImage}
         style={[
           styles.flare,
           {
-            // Hacemos que el flare se mueva la mitad que el fondo, para dar profundidad
             transform: [
               { translateX: flareTranslateX },
               { translateY: flareTranslateY },
@@ -233,22 +232,17 @@ export default function LoginScreen({route}: Props) {
         resizeMode="contain"
       />
 
-    
-
-      {/* Capa de contenido */}
       <SafeAreaView style={styles.overlay} edges={['top', 'left', 'right']}>
         <LinearGradient
-          colors={['rgba(17, 20, 25, 0)', 'rgba(17, 20, 25, 0.77)']} // del 0% arriba al 100% abajo
+          colors={['rgba(17, 20, 25, 0)', 'rgba(17, 20, 25, 0.77)']}
           locations={[0.2, 1]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={[StyleSheet.absoluteFill, styles.linearGradient]}
         />
 
-        {/* Polvo cayendo en diagonal (detrás de la UI) */}
         <DustOverlay />
 
-        {/* UI encima de todo */}
         <ScrollView
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
@@ -258,21 +252,16 @@ export default function LoginScreen({route}: Props) {
           >
           <Image source={logoImage} style={styles.logo} />
 
-          {/* Botón principal para abrir modal de email */}
           <TouchableOpacity
             style={[styles.button, styles.emailButton]}
             onPress={() => {
-              /* aquí abres tu modal de login por email */
               setMessage(null);
               setShowModal(true);
             }}
           >
-            <Text style={[styles.buttonText, styles.emailText]}>
-              Continuar con email
-            </Text>
+            <Text style={[styles.buttonText, styles.emailText]}>Continuar con email</Text>
           </TouchableOpacity>
 
-          {/* Apple Sign-in */}
           <TouchableOpacity
             style={[styles.button, styles.appleButton]}
             onPress={async () => {
@@ -285,7 +274,6 @@ export default function LoginScreen({route}: Props) {
                     AppleAuthentication.AppleAuthenticationScope.EMAIL,
                   ],
                 });
-                // aquí registerUser / loginUser con cred.email…
               }
             }}
           >
@@ -293,10 +281,8 @@ export default function LoginScreen({route}: Props) {
             <Text style={styles.buttonText}>Continuar con Apple</Text>
           </TouchableOpacity>
 
-          {/* Google OAuth */}
           <TouchableOpacity
             disabled={!request}
-            // @ts-ignore
             onPress={() => promptAsync()}
             style={[styles.button, styles.googleButton]}
           >
@@ -304,7 +290,6 @@ export default function LoginScreen({route}: Props) {
             <Text style={styles.buttonTextWhite}>Continuar con Google</Text>
           </TouchableOpacity>
 
-          {/* Facebook OAuth */}
           <TouchableOpacity
             style={[styles.button, styles.fbButton]}
             onPress={() => fbPrompt()}
@@ -315,13 +300,9 @@ export default function LoginScreen({route}: Props) {
 
           <View style={styles.separator} />
 
-          {/* Textos de Términos */}
-          <Text style={styles.termsText}>
-            Al continuar, aceptas nuestros Términos de uso y Política de privacidad
-          </Text>
+          <Text style={styles.termsText}>Al continuar, aceptas nuestros Términos de uso y Política de privacidad</Text>
         </ScrollView>
 
-        {/* ——— MODAL EMAIL/PASS ——— */}
         <Modal
           visible={showModal}
           transparent
@@ -362,7 +343,6 @@ export default function LoginScreen({route}: Props) {
                 }}>
                 <Text style={styles.forgotText}>He olvidado mi contraseña</Text>
               </TouchableOpacity>
-              {/* Mensaje de error dentro de la modal */}
               {message ? <Text style={styles.modalMessage}>{message}</Text> : null}
               <View style={styles.modalButtons}>
                 <TouchableOpacity style={styles.modalButton} onPress={handleRegister}>

@@ -80,7 +80,6 @@ export default function ResetPasswordScreen({ navigation }: Props) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      {/* Flecha de volver */}
       <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}
@@ -90,7 +89,6 @@ export default function ResetPasswordScreen({ navigation }: Props) {
 
       <Text style={styles.title}>Restablecer contraseña</Text>
 
-      {/* Paso 1: email + código */}
       {stage === 'send' && (
         <>
           <Text style={styles.stepText}>
@@ -135,7 +133,6 @@ export default function ResetPasswordScreen({ navigation }: Props) {
           </TouchableOpacity>
         </>
       )}
-      {/* Paso 2: nueva contraseña */}
       {stage === 'verify' && (
         <>
           <Text style={styles.stepText}>

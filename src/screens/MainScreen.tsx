@@ -34,25 +34,19 @@ export default function MainScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="light-content" />
-      {/* Header simplificado respetando safe area */}
       <View style={[styles.header, { alignSelf: 'flex-start' }]}>
         {initial
-          // Si tenemos initial, mostramos solo el avatar a la izquierda
           ? (
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>{initial}</Text>
             </View>
           )
-          // Si no, mostramos solo el icono de menú
           : (
-            <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-              {/* <Icon name="menu" size={28} style={styles.menuIcon} /> */}
-            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
           )
         }
       </View>
 
-      {/* Tabs */}
       <View style={{ flex: 1 }}>
         <Tab.Navigator
             initialRouteName="Personaje"

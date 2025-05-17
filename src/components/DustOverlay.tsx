@@ -72,7 +72,6 @@ export default function DustOverlay() {
   return (
     <View style={StyleSheet.absoluteFillObject}>
       {particles.map((p, i) => {
-        // X = x0 + slope * currentY
         const translateX = p.translateY.interpolate({
           inputRange: [-10, height + 10],
           outputRange: [p.x0, p.x0 + TOTAL_DISTANCE * p.slope],

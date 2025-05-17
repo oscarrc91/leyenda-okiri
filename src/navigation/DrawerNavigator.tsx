@@ -29,19 +29,14 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      {/* ——— HEADER —— */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => props.navigation.closeDrawer()}>
-          {/* <Icon name="arrow-back-ios" size={24} color="#FFF" /> */}
-        </TouchableOpacity>
+        <TouchableOpacity onPress={() => props.navigation.closeDrawer()}/>
         <Text style={styles.headerText}> NIVEL {level} | {exp} EXP </Text>
-        {/* Barra de progreso */}
         <View style={styles.progressBg}>
           <View style={[styles.progressFill, { width: `${progress * 100}%` }]} />
         </View>
       </View>
 
-      {/* ——— Ítems de menú —— */}
       <DrawerContentScrollView
         {...props}
         contentContainerStyle={styles.scrollArea}
@@ -53,7 +48,6 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           { label: 'Política de privacidad', route: 'Privacidad' },
           { label: 'Términos de uso', route: 'Terminos' },
           { label: 'Cerrar sesión',   action: () => {
-              // tu lógica de logout:
               props.navigation.reset({
                 index: 0,
                 routes: [{ name: 'Login' }]
@@ -84,12 +78,11 @@ export default function DrawerNavigator() {
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
-        // fondo tipo pergamino:
         drawerStyle: { backgroundColor: '#F2E7D5', width: width * 0.75 }
       }}
     >
       <Drawer.Screen name="Home"    component={MainScreen} />
-      {/* … el resto de pantallas */}
+      
     </Drawer.Navigator>
   );
 }

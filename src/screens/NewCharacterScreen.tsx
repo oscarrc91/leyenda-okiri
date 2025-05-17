@@ -96,7 +96,6 @@ export default function NewCharacterScreen() {
 
   return (
     <View style={styles.container}>
-      {/* ——— HEADER ——— */}
       <View style={[styles.header, { paddingTop: insets.top }]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -108,7 +107,6 @@ export default function NewCharacterScreen() {
         <View style={styles.backButton} />
       </View>
 
-      {/* ——— SLIDER DE RAZAS ——— */}
       <FlatList
         ref={flatListRef}
         data={races}
@@ -134,7 +132,6 @@ export default function NewCharacterScreen() {
         onMomentumScrollEnd={onMomentumScrollEnd}
       />
 
-      {/* ——— ESTADÍSTICAS ——— */}
       <View style={styles.statsContainer}>
         <Text style={styles.statLabel}>
           Altura: {races[selectedIndex].stats.altura}
@@ -159,7 +156,6 @@ export default function NewCharacterScreen() {
         </Text>
       </View>
 
-      {/* ——— BOTÓN SIGUIENTE ——— */}
       <TouchableOpacity style={styles.nextButton} onPress={goNext}>
         <Text style={styles.nextText}>Siguiente</Text>
       </TouchableOpacity>
