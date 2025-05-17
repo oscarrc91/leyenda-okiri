@@ -22,7 +22,7 @@ export default function App() {
   return (
     <BannerProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }} edges={['top', 'bottom']}>
-+        <StatusBar
+        <StatusBar
           barStyle="light-content"
           backgroundColor="black"
           translucent={false}
